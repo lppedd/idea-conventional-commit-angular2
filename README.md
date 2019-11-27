@@ -12,9 +12,15 @@ This plugin extends the functionality of [Conventional Commit][2] in Angular (2+
 Angular [commit message guidelines][3] are followed to provide additional commit _types_,
 and projects are searched for `NgModule` annotated classes to provide additional commit `scopes`.
 
+<br />
 <img src="https://raw.githubusercontent.com/lppedd/idea-conventional-commit-angular2/master/images/ngmodules.png" alt="NgModule scopes">
 
 -----
+
+## Why Java and not Kotlin?
+
+The answer to that question is straightforward: **bundle size**.  
+I want to keep Conventional Commit extensions as small as possible.
 
 ## Author
 
