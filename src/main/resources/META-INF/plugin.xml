@@ -1,0 +1,19 @@
+<idea-plugin>
+  <id>com.github.lppedd.idea-conventional-commit-angular2</id>
+  <name>Angular Conventional Commit</name>
+  <vendor
+      email="lp.edoardo@gmail.com"
+      url="https://github.com/lppedd/idea-conventional-commit-angular2"
+  >
+    Edoardo Luppi
+  </vendor>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>AngularJS</depends>
+  <depends>com.github.lppedd.idea-conventional-commit</depends>
+
+  <extensions defaultExtensionNs="com.github.lppedd.idea-conventional-commit">
+    <commitTypeProvider implementation="com.github.lppedd.cc.angular2.Angular2CommitTypeProvider" />
+    <commitScopeProvider implementation="com.github.lppedd.cc.angular2.Angular2CommitScopeProvider" />
+  </extensions>
+</idea-plugin>
