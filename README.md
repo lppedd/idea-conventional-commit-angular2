@@ -12,6 +12,10 @@ This plugin extends the functionality of [Conventional Commit][2] in Angular (2+
 Angular [commit message guidelines][3] are followed to provide additional commit _types_,
 and projects are searched for `NgModule` annotated classes to provide additional commit `scopes`.
 
+<img src="https://raw.githubusercontent.com/lppedd/idea-conventional-commit-angular2/master/images/ngmodules.png" alt="NgModule scopes">
+
+-----
+
 ## Author
 
  - Edoardo Luppi (<lp.edoardo@gmail.com>)
