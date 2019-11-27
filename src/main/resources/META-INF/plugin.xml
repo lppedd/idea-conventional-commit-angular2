@@ -9,11 +9,6 @@
   </vendor>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends>AngularJS</depends>
   <depends>com.github.lppedd.idea-conventional-commit</depends>
-
-  <extensions defaultExtensionNs="com.github.lppedd.idea-conventional-commit">
-    <commitTypeProvider implementation="com.github.lppedd.cc.angular2.Angular2CommitTypeProvider" />
-    <commitScopeProvider implementation="com.github.lppedd.cc.angular2.Angular2CommitScopeProvider" />
-  </extensions>
+  <depends optional="true" config-file="angular_js.xml">AngularJS</depends>
 </idea-plugin>

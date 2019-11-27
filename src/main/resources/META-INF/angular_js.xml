@@ -1,0 +1,6 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.github.lppedd.idea-conventional-commit">
+    <commitTypeProvider implementation="com.github.lppedd.cc.angular2.Angular2CommitTypeProvider" />
+    <commitScopeProvider implementation="com.github.lppedd.cc.angular2.Angular2CommitScopeProvider" />
+  </extensions>
+</idea-plugin>
