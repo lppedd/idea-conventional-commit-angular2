@@ -10,7 +10,7 @@ Looking for the latest **plugin binaries**? Get them [here][1] as `.zip`
 This plugin extends the functionality of [Conventional Commit][2] in Angular (2+) contexts.
 
 Angular [commit message guidelines][3] are followed to provide additional commit _types_,
-and projects are searched for `NgModule`s classes to provide additional commit `scopes`.
+and projects are searched for `NgModule` annotated classes to provide additional commit `scopes`.
 
 ## Author
 
