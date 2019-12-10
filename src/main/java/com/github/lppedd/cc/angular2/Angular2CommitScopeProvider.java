@@ -17,6 +17,8 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -93,14 +95,26 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
                 )
             ).stream()
         )
-        .map(virtualFile -> PsiUtilCore.getPsiFile(project, virtualFile))
-        .filter(Angular2LangUtil::isAngular2Context)
+        .map(this::toPsiFile)
+        .filter(this::isAngular2Context)
         .map(PsiFileSystemItem::getName)
         .map(String::toLowerCase)
         .map(fileName -> fileName.replaceFirst(".module.ts$", ""))
         .sorted()
         .map(moduleName -> new Angular2CommitScope(moduleName, null))
         .collect(Collectors.toList());
+  }
+
+  private PsiFile toPsiFile(final VirtualFile virtualFile) {
+    return APPLICATION.runReadAction(
+        (Computable<PsiFile>) () -> PsiUtilCore.getPsiFile(project, virtualFile)
+    );
+  }
+
+  private boolean isAngular2Context(final PsiElement psiFile) {
+    return APPLICATION.runReadAction(
+        (Computable<Boolean>) () -> Angular2LangUtil.isAngular2Context(psiFile)
+    );
   }
 
   private static class Angular2CommitBuildScope extends CommitScope {
