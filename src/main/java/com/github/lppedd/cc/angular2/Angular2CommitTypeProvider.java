@@ -40,7 +40,7 @@ class Angular2CommitTypeProvider implements CommitTypeProvider {
 
   @NotNull
   @Override
-  public List<CommitType> getCommitTypes(final String prefix) {
+  public List<CommitType> getCommitTypes(@Nullable final String prefix) {
     return TYPES;
   }
 

@@ -35,7 +35,7 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
   private static final Application APPLICATION = ApplicationManager.getApplication();
   private final Project project;
 
-  Angular2CommitScopeProvider(final Project project) {
+  Angular2CommitScopeProvider(@NotNull final Project project) {
     this.project = project;
   }
 
@@ -53,7 +53,7 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
 
   @NotNull
   @Override
-  public List<CommitScope> getCommitScopes(final String commitType) {
+  public List<CommitScope> getCommitScopes(@Nullable final String commitType) {
     return "build".equals(commitType) ? SCOPES : findNgModules();
   }
 
