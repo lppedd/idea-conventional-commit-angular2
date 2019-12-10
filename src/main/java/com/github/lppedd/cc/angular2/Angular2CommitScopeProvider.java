@@ -17,12 +17,8 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
 
@@ -95,9 +91,8 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
                 )
             ).stream()
         )
-        .map(this::toPsiFile)
         .filter(this::isAngular2Context)
-        .map(PsiFileSystemItem::getName)
+        .map(VirtualFile::getName)
         .map(String::toLowerCase)
         .map(fileName -> fileName.replaceFirst(".module.ts$", ""))
         .sorted()
@@ -105,15 +100,9 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
         .collect(Collectors.toList());
   }
 
-  private PsiFile toPsiFile(final VirtualFile virtualFile) {
+  private boolean isAngular2Context(@NotNull final VirtualFile virtualFile) {
     return APPLICATION.runReadAction(
-        (Computable<PsiFile>) () -> PsiUtilCore.getPsiFile(project, virtualFile)
-    );
-  }
-
-  private boolean isAngular2Context(final PsiElement psiFile) {
-    return APPLICATION.runReadAction(
-        (Computable<Boolean>) () -> Angular2LangUtil.isAngular2Context(psiFile)
+        (Computable<Boolean>) () -> Angular2LangUtil.isAngular2Context(project, virtualFile)
     );
   }
 
