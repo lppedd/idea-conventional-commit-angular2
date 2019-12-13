@@ -1,26 +1,35 @@
 package com.github.lppedd.cc.angular2;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.angular2.lang.Angular2LangUtil;
+import org.angular2.entities.Angular2EntitiesProvider;
+import org.angular2.entities.Angular2Entity;
+import org.angular2.entities.Angular2Module;
+import org.angular2.index.Angular2IndexingHandler;
+import org.angular2.index.Angular2SourceModuleIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.github.lppedd.cc.api.CommitScopeProvider;
 import com.github.lppedd.cc.api.ProviderPresentation;
+import com.intellij.codeInsight.documentation.DocumentationManager;
+import com.intellij.lang.javascript.psi.JSImplicitElementProvider;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Processor;
-import com.intellij.util.indexing.IdFilter;
+import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.util.CachedValueProvider.Result;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Edoardo Luppi
@@ -33,10 +42,14 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
   );
 
   private static final Application APPLICATION = ApplicationManager.getApplication();
-  private final Project project;
+  private static final StubIndex STUB_INDEX = StubIndex.getInstance();
 
-  Angular2CommitScopeProvider(@NotNull final Project project) {
+  private final Project project;
+  private final CachedValuesManager cachedValuesManager;
+
+  Angular2CommitScopeProvider(final Project project) {
     this.project = project;
+    cachedValuesManager = CachedValuesManager.getManager(project);
   }
 
   @NotNull
@@ -54,56 +67,61 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
   @NotNull
   @Override
   public List<CommitScope> getCommitScopes(@Nullable final String commitType) {
-    return "build".equals(commitType) ? SCOPES : findNgModules();
+    return "build".equals(commitType) ? SCOPES : findModules();
   }
 
   @NotNull
-  private List<CommitScope> findNgModules() {
-    final Collection<String> fileNames = new HashSet<>(64);
-
-    final Processor<String> stringProcessor = fileName -> {
-      if (fileName.toLowerCase().endsWith(".module.ts")) {
-        fileNames.add(fileName);
-      }
-
-      return true;
-    };
-
-    final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
-
-    APPLICATION.runReadAction(() ->
-        FilenameIndex.processAllFileNames(
-            stringProcessor,
-            projectScope,
-            IdFilter.getProjectIdFilter(project, false)
-        )
-    );
-
-    return fileNames
-        .stream()
-        .flatMap(fileName ->
-            APPLICATION.runReadAction((Computable<Collection<VirtualFile>>) () ->
-                FilenameIndex.getVirtualFilesByName(
-                    project,
-                    fileName,
-                    true,
-                    projectScope
-                )
-            ).stream()
-        )
-        .filter(this::isAngular2Context)
-        .map(VirtualFile::getName)
-        .map(String::toLowerCase)
-        .map(fileName -> fileName.replaceFirst(".module.ts$", ""))
-        .sorted()
-        .map(moduleName -> new Angular2CommitScope(moduleName, null))
-        .collect(Collectors.toList());
+  private List<CommitScope> findModules() {
+    return cachedValuesManager.getCachedValue(project, this::computeCommitScopes);
   }
 
-  private boolean isAngular2Context(@NotNull final VirtualFile virtualFile) {
-    return APPLICATION.runReadAction(
-        (Computable<Boolean>) () -> Angular2LangUtil.isAngular2Context(project, virtualFile)
-    );
+  @NotNull
+  private Result<List<CommitScope>> computeCommitScopes() {
+    final List<CommitScope> commitScopes =
+        APPLICATION.runReadAction((Computable<List<CommitScope>>) () ->
+            findSourceModules()
+                .stream()
+                .map(this::toCommitScope)
+                .sorted(Comparator.comparing(CommitScope::getText))
+                .collect(Collectors.toList())
+        );
+
+    return Result.create(commitScopes, PsiModificationTracker.MODIFICATION_COUNT);
+  }
+
+  /** Returns the local project's {@code NgModule}s, without externally provided ones. */
+  @NotNull
+  private Collection<Angular2Module> findSourceModules() {
+    final Collection<Angular2Module> modules = new ArrayList<>(32);
+    STUB_INDEX.processElements(
+        Angular2SourceModuleIndex.KEY,
+        Angular2IndexingHandler.NG_MODULE_INDEX_NAME,
+        project,
+        GlobalSearchScope.projectScope(project),
+        JSImplicitElementProvider.class,
+        module -> {
+          if (module.isValid()) {
+            ContainerUtil.addIfNotNull(modules, Angular2EntitiesProvider.getModule(module));
+          }
+
+          return true;
+        });
+
+    return modules;
+  }
+
+  /**
+   * Transforms a {@code NgModule} definition to a {@link CommitScope}.<br />
+   * If a JSDoc comment is found, it is used as scope description.
+   */
+  @NotNull
+  private CommitScope toCommitScope(@NotNull final Angular2Entity module) {
+    final PsiElement sourceElement = module.getTypeScriptClass();
+    final String name = CCAngularUtils.toDashCase(module.getName()).replaceFirst("-module$", "");
+    final String documentation =
+        DocumentationManager.getProviderFromElement(sourceElement)
+            .generateDoc(sourceElement, null);
+    return new Angular2CommitScope(name, documentation);
   }
 
   private static class Angular2CommitBuildScope extends CommitScope {

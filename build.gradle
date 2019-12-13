@@ -19,7 +19,11 @@ dependencies {
 intellij {
     version 'IU-2019.2'
     downloadSources true
-    plugins = ['com.github.lppedd.idea-conventional-commit:0.2.0', 'AngularJS']
+    plugins = [
+            'com.github.lppedd.idea-conventional-commit:0.2.0',
+            'JavaScriptLanguage',
+            'AngularJS'
+    ]
 }
 
 patchPluginXml {
