@@ -23,13 +23,14 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.CachedValueProvider.Result;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.ContainerUtilRt;
+
+import lombok.var;
 
 /**
  * @author Edoardo Luppi
@@ -77,7 +78,7 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
 
   @NotNull
   private Result<List<CommitScope>> computeCommitScopes() {
-    final List<CommitScope> commitScopes =
+    final var commitScopes =
         APPLICATION.runReadAction((Computable<List<CommitScope>>) () ->
             findSourceModules()
                 .stream()
@@ -116,11 +117,13 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
    */
   @NotNull
   private CommitScope toCommitScope(@NotNull final Angular2Entity module) {
-    final PsiElement sourceElement = module.getTypeScriptClass();
-    final String name = CCAngularUtils.toDashCase(module.getName()).replaceFirst("-module$", "");
-    final String documentation =
-        DocumentationManager.getProviderFromElement(sourceElement)
+    final var sourceElement = module.getTypeScriptClass();
+    final var name = CCAngularUtils.toDashCase(module.getName()).replaceFirst("-module$", "");
+    final var documentation =
+        DocumentationManager
+            .getProviderFromElement(sourceElement)
             .generateDoc(sourceElement, null);
+
     return new Angular2CommitScope(name, documentation);
   }
 
