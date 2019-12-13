@@ -100,9 +100,10 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
         project,
         GlobalSearchScope.projectScope(project),
         JSImplicitElementProvider.class,
-        module -> {
-          if (module.isValid()) {
-            ContainerUtil.addIfNotNull(modules, Angular2EntitiesProvider.getModule(module));
+        elementProvider -> {
+          if (elementProvider.isValid()) {
+            final Angular2Module module = Angular2EntitiesProvider.getModule(elementProvider);
+            ContainerUtilRt.addIfNotNull(modules, module);
           }
 
           return true;
