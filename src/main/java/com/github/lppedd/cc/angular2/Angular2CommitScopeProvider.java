@@ -28,7 +28,7 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.CachedValueProvider.Result;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.containers.ContainerUtilRt;
+import com.intellij.util.containers.ContainerUtil;
 
 import lombok.var;
 
@@ -103,7 +103,7 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
         elementProvider -> {
           if (elementProvider.isValid()) {
             final Angular2Module module = Angular2EntitiesProvider.getModule(elementProvider);
-            ContainerUtilRt.addIfNotNull(modules, module);
+            ContainerUtil.addIfNotNull(modules, module);
           }
 
           return true;
