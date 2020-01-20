@@ -30,8 +30,6 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.containers.ContainerUtil;
 
-import lombok.var;
-
 /**
  * @author Edoardo Luppi
  */
@@ -102,7 +100,7 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
         JSImplicitElementProvider.class,
         elementProvider -> {
           if (elementProvider.isValid()) {
-            final Angular2Module module = Angular2EntitiesProvider.getModule(elementProvider);
+            final var module = Angular2EntitiesProvider.getModule(elementProvider);
             ContainerUtil.addIfNotNull(modules, module);
           }
 
