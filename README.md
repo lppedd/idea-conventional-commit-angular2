@@ -2,6 +2,8 @@
 
 # Angular Conventional Commit
 
+### Available @ [JetBrains Plugins Repository][4]
+
 Looking for the latest **plugin binaries**? Get them [here][1] as `.zip`  
 <small>Supported IDE versions: `192.*` to `193.*` (both inclusive)</small> 
 
@@ -29,3 +31,4 @@ I want to keep Conventional Commit extensions as small as possible.
 [1]: https://github.com/lppedd/idea-conventional-commit-angular2/releases
 [2]: https://github.com/lppedd/idea-conventional-commit
 [3]: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines
+[4]: https://plugins.jetbrains.com/plugin/13405-angular-conventional-commit
