@@ -4,9 +4,9 @@ plugins {
 }
 
 group 'com.github.lppedd'
-version '0.2.2'
+version '0.2.3'
 
-sourceCompatibility = JavaVersion.VERSION_12
+sourceCompatibility = JavaVersion.VERSION_14
 
 repositories {
     mavenCentral()
@@ -15,14 +15,17 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
     annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:0.2.0'
+    annotationProcessor 'net.bytebuddy:byte-buddy:1.10.8'
+    annotationProcessor 'net.bytebuddy:byte-buddy-agent:1.10.8'
 }
 
 intellij {
     version 'IU-2019.2'
     downloadSources true
     plugins = [
-            'com.github.lppedd.idea-conventional-commit:0.2.0',
+            'com.github.lppedd.idea-conventional-commit:0.7.0',
             'JavaScriptLanguage',
             'AngularJS'
     ]
@@ -37,7 +40,8 @@ patchPluginXml {
 }
 
 compileJava {
+    options.fork = true
     options.compilerArgs = [
-            "--release", "8" // Avoid using Java 12 APIs
+            "--release", "8"
     ]
 }
