@@ -15,6 +15,7 @@ import org.angular2.index.Angular2SourceModuleIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.github.lppedd.cc.api.CommitScope;
 import com.github.lppedd.cc.api.CommitScopeProvider;
 import com.github.lppedd.cc.api.ProviderPresentation;
 import com.intellij.codeInsight.documentation.DocumentationManager;
