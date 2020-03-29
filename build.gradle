@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.lppedd'
-version '0.2.3'
+version '0.2.4'
 
 sourceCompatibility = JavaVersion.VERSION_14
 
