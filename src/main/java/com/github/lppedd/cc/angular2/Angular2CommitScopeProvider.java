@@ -36,9 +36,9 @@ import com.intellij.util.containers.ContainerUtil;
  */
 class Angular2CommitScopeProvider implements CommitScopeProvider {
   private static final List<CommitScope> SCOPES = Arrays.asList(
-      new Angular2CommitBuildScope("npm", null),
-      new Angular2CommitBuildScope("gulp", null),
-      new Angular2CommitBuildScope("broccoli", null)
+      new Angular2CommitBuildScope("npm", ""),
+      new Angular2CommitBuildScope("gulp", ""),
+      new Angular2CommitBuildScope("broccoli", "")
   );
 
   private static final Application APPLICATION = ApplicationManager.getApplication();
@@ -124,13 +124,13 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
             .getProviderFromElement(sourceElement)
             .generateDoc(sourceElement, null);
 
-    return new Angular2CommitScope(name, documentation);
+    return new Angular2CommitScope(name, documentation != null ? documentation : "");
   }
 
   private static class Angular2CommitBuildScope extends CommitScope {
     Angular2CommitBuildScope(
         @NotNull final String text,
-        @Nullable final String description) {
+        @NotNull final String description) {
       super(text, description);
     }
 
@@ -144,7 +144,7 @@ class Angular2CommitScopeProvider implements CommitScopeProvider {
   private static class Angular2CommitScope extends CommitScope {
     Angular2CommitScope(
         @NotNull final String text,
-        @Nullable final String description) {
+        @NotNull final String description) {
       super(text, description);
     }
 
