@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.16'
+    id 'org.jetbrains.intellij' version '0.4.26'
 }
 
 group 'com.github.lppedd'
@@ -16,9 +16,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:0.2.0'
-    annotationProcessor 'net.bytebuddy:byte-buddy:1.10.8'
-    annotationProcessor 'net.bytebuddy:byte-buddy-agent:1.10.8'
+    annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:0.3.0'
 }
 
 intellij {
